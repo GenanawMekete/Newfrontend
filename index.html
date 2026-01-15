@@ -379,6 +379,95 @@
                 </div>
             </div>
         </div>
+        <!-- Game Phase Indicators -->
+<div class="game-phases">
+  <div class="phase-indicator" data-phase="card_selection">
+    <div class="phase-icon">📋</div>
+    <div class="phase-label">Select Card</div>
+    <div class="phase-timer" id="cardSelectionTimer">30s</div>
+  </div>
+  
+  <div class="phase-indicator" data-phase="countdown">
+    <div class="phase-icon">⏱️</div>
+    <div class="phase-label">Starting</div>
+    <div class="phase-timer" id="gameStartTimer">5s</div>
+  </div>
+  
+  <div class="phase-indicator" data-phase="active">
+    <div class="phase-icon">🎮</div>
+    <div class="phase-label">Game On</div>
+    <div class="phase-timer" id="gameDuration">-</div>
+  </div>
+  
+  <div class="phase-indicator" data-phase="announcing">
+    <div class="phase-icon">🏆</div>
+    <div class="phase-label">Winners</div>
+    <div class="phase-timer">5s</div>
+  </div>
+</div>
+
+<!-- Current Number Call Display -->
+<div class="current-call-container">
+  <div class="call-info">
+    <div class="call-label">CURRENT CALL</div>
+    <div class="call-number-display">
+      <span class="call-letter" id="currentCallLetter">-</span>
+      <span class="call-number" id="currentCallNumber">-</span>
+    </div>
+    <div class="call-counter" id="callCounter">Call #0</div>
+  </div>
+  
+  <div class="next-call-timer">
+    <div class="timer-label">Next call in:</div>
+    <div class="timer-value" id="nextCallTimer">5s</div>
+  </div>
+</div>
+
+<!-- Number Call Animation -->
+<div id="numberCallAnimation" class="number-call-animation-container">
+  <!-- Animation content added by JavaScript -->
+</div>
+
+<!-- Winner Announcement Modal -->
+<div id="winnerAnnouncement" class="winner-announcement-container">
+  <!-- Content added by JavaScript -->
+</div>
+
+<!-- Card Selection Panel -->
+<div id="cardSelectionPanel" class="card-selection-panel">
+  <div class="panel-header">
+    <h4>📋 SELECT YOUR CARD</h4>
+    <div class="time-remaining">
+      <span id="selectionTimer">30</span>s remaining
+    </div>
+  </div>
+  
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="selectionProgress"></div>
+    </div>
+  </div>
+  
+  <div class="panel-body">
+    <p class="selection-message" id="timeLeftMessage">
+      30 seconds to select your card for next game
+    </p>
+    <p class="game-info">
+      Next Game ID: <span id="nextGameId">-</span>
+      <br>
+      Ends at: <span id="selectionEndsAt">-</span>
+    </p>
+    
+    <div class="selection-actions">
+      <button id="quickSelectBtn" class="btn-quick-select">
+        <i class="fas fa-bolt"></i> Quick Select
+      </button>
+      <button id="manualSelectBtn" class="btn-manual-select">
+        <i class="fas fa-search"></i> Choose Card
+      </button>
+    </div>
+  </div>
+</div>
 
         <!-- Toast Notifications -->
         <div id="toastContainer" class="toast-container"></div>
