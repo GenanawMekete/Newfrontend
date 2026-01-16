@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Abush Bingo - Play & Win!</title>
+    <title>Habesha Bingo - Play & Win Real Money!</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Play real-time multiplayer Bingo on Telegram. Win cash prizes instantly!">
-    <meta name="keywords" content="bingo, telegram, game, win, ethiopia, telebirr, cash">
-    <meta name="author" content="Abush Bingo">
-    <meta property="og:title" content="Abush Bingo - Telegram Game">
-    <meta property="og:description" content="Real-time multiplayer Bingo with instant cash prizes">
+    <meta name="description" content="Play real-time multiplayer Bingo on Telegram. Win cash prizes instantly with our dynamic timing system!">
+    <meta name="keywords" content="bingo, telegram, game, win, ethiopia, telebirr, cash, multiplayer">
+    <meta name="author" content="Habesha Bingo">
+    <meta property="og:title" content="Habesha Bingo - Telegram Bingo Game">
+    <meta property="og:description" content="Real-time multiplayer Bingo with dynamic timing and instant cash prizes">
     <meta property="og:image" content="https://yourdomain.com/assets/og-image.jpg">
     <meta property="og:url" content="https://yourdomain.com">
     <meta name="twitter:card" content="summary_large_image">
@@ -22,12 +22,13 @@
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/timing.css">
     <link rel="stylesheet" href="css/responsive.css">
     
     <!-- Telegram Web App SDK -->
@@ -40,7 +41,10 @@
             <div class="loading-spinner">
                 <div class="spinner"></div>
             </div>
-            <div class="loading-text">Loading Geez Bingo...</div>
+            <div class="loading-text">
+                <h3>HABESHA BINGO</h3>
+                <p>Loading game...</p>
+            </div>
         </div>
     </div>
 
@@ -50,10 +54,14 @@
         <header class="app-header">
             <div class="header-content">
                 <div class="logo">
-                    <h1>ABUSH BINGO</h1>
-                    <div class="logo-subtitle">Play & Win Real Money</div>
+                    <h1><i class="fas fa-dice"></i> HABESHA BINGO</h1>
+                    <div class="logo-subtitle">Play • Win • Earn</div>
                 </div>
                 <div class="header-actions">
+                    <div class="wallet-display">
+                        <i class="fas fa-wallet"></i>
+                        <span id="walletBalance">0 ETB</span>
+                    </div>
                     <button id="menuToggle" class="btn-icon">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -67,40 +75,85 @@
             <section class="status-bar">
                 <div class="status-item">
                     <span class="status-label">Status</span>
-                    <span id="gameStatus" class="status-value waiting">WAITING</span>
+                    <span id="gameStatus" class="status-value idle">WAITING</span>
                 </div>
                 <div class="status-item">
                     <span class="status-label">Players</span>
                     <span id="playerCount" class="status-value">0</span>
                 </div>
                 <div class="status-item">
-                    <span class="status-label">Derash</span>
-                    <span id="derashAmount" class="status-value">0 ETB</span>
+                    <span class="status-label">Prize Pool</span>
+                    <span id="prizePool" class="status-value">0 ETB</span>
                 </div>
                 <div class="status-item">
-                    <span class="status-label">Time Left</span>
-                    <span id="timeLeft" class="status-value">00:00</span>
+                    <span class="status-label">Game ID</span>
+                    <span id="gameId" class="status-value">-</span>
                 </div>
             </section>
 
-            <!-- Current Number Display -->
-            <section class="current-number-section">
-                <div class="current-number-label">CURRENT CALL</div>
-                <div class="current-number-display">
-                    <span id="currentCallLetter" class="call-letter">B</span>
-                    <span id="currentCallNumber" class="call-number">-</span>
+            <!-- Game Phase Indicators -->
+            <section class="game-phases">
+                <div class="phase-indicator active" data-phase="idle">
+                    <div class="phase-icon">⏸️</div>
+                    <div class="phase-label">Waiting</div>
+                    <div class="phase-timer">-</div>
                 </div>
-                <div class="call-history">
-                    <div class="history-label">Last Calls:</div>
-                    <div id="callHistory" class="history-numbers"></div>
+                
+                <div class="phase-indicator" data-phase="card_selection">
+                    <div class="phase-icon">📋</div>
+                    <div class="phase-label">Select Card</div>
+                    <div class="phase-timer" id="cardSelectionTimer">30s</div>
+                </div>
+                
+                <div class="phase-indicator" data-phase="countdown">
+                    <div class="phase-icon">⏱️</div>
+                    <div class="phase-label">Starting</div>
+                    <div class="phase-timer" id="gameStartTimer">5s</div>
+                </div>
+                
+                <div class="phase-indicator" data-phase="active">
+                    <div class="phase-icon">🎮</div>
+                    <div class="phase-label">Game On</div>
+                    <div class="phase-timer" id="gameDuration">-</div>
+                </div>
+                
+                <div class="phase-indicator" data-phase="announcing">
+                    <div class="phase-icon">🏆</div>
+                    <div class="phase-label">Winners</div>
+                    <div class="phase-timer">5s</div>
                 </div>
             </section>
 
-            <!-- Game Board -->
-            <section class="game-board-section">
+            <!-- Current Number Call Display -->
+            <section class="current-call-container">
+                <div class="call-info">
+                    <div class="call-label">CURRENT CALL</div>
+                    <div class="call-number-display">
+                        <span class="call-letter" id="currentCallLetter">-</span>
+                        <span class="call-number" id="currentCallNumber">-</span>
+                    </div>
+                    <div class="call-counter" id="callCounter">Call #0</div>
+                </div>
+                
+                <div class="next-call-timer">
+                    <div class="timer-label">Next call in:</div>
+                    <div class="timer-value" id="nextCallTimer">5s</div>
+                </div>
+            </section>
+
+            <!-- Countdown Display -->
+            <div id="countdownDisplay" class="countdown-display" style="display: none;">
+                <!-- Countdown content will be inserted by JavaScript -->
+            </div>
+
+            <!-- Your Bingo Card -->
+            <section class="bingo-card-section">
                 <div class="section-header">
-                    <h2>YOUR BINGO CARD</h2>
-                    <div class="card-number">Card #<span id="cardNumber">0</span></div>
+                    <h2><i class="fas fa-id-card"></i> YOUR BINGO CARD</h2>
+                    <div class="card-info">
+                        <span>Card #<span id="yourCardNumber">-</span></span>
+                        <span class="card-status" id="cardStatus">Not Selected</span>
+                    </div>
                 </div>
                 
                 <div class="bingo-card-container">
@@ -115,51 +168,36 @@
                             </tr>
                         </thead>
                         <tbody id="bingoCardBody">
-                            <!-- Generated dynamically -->
+                            <!-- Bingo card will be generated by JavaScript -->
                         </tbody>
                     </table>
                 </div>
                 
-                <div class="card-actions">
+                <div class="card-controls">
                     <button id="autoMarkToggle" class="btn-toggle active">
                         <i class="fas fa-robot"></i> Auto-mark
                     </button>
-                    <button id="clearMarks" class="btn-secondary">
-                        <i class="fas fa-eraser"></i> Clear
+                    <button id="clearMarksBtn" class="btn-secondary">
+                        <i class="fas fa-eraser"></i> Clear Marks
+                    </button>
+                    <button id="bingoClaimBtn" class="btn-bingo" disabled>
+                        <i class="fas fa-trophy"></i> CLAIM BINGO
                     </button>
                 </div>
             </section>
 
-            <!-- Called Numbers -->
+            <!-- Called Numbers Display -->
             <section class="called-numbers-section">
                 <div class="section-header">
                     <h3><i class="fas fa-bullhorn"></i> CALLED NUMBERS</h3>
-                    <span id="calledCount" class="badge">0/75</span>
+                    <div class="called-stats">
+                        <span id="calledCount">0</span>/75
+                        <span class="separator">•</span>
+                        <span id="lastCallTime">-</span>
+                    </div>
                 </div>
                 <div class="numbers-grid" id="calledNumbersGrid">
-                    <!-- Numbers generated dynamically -->
-                </div>
-            </section>
-
-            <!-- Player Info -->
-            <section class="player-info-section">
-                <div class="info-card">
-                    <div class="info-item">
-                        <div class="info-label">Wallet</div>
-                        <div id="walletAmount" class="info-value">0 ETB</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Stake</div>
-                        <div id="stakeAmount" class="info-value">10 ETB</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Games Played</div>
-                        <div id="gamesPlayed" class="info-value">0</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Total Wins</div>
-                        <div id="totalWins" class="info-value">0</div>
-                    </div>
+                    <!-- Called numbers will be added by JavaScript -->
                 </div>
             </section>
 
@@ -171,25 +209,67 @@
                         <span>Select Card</span>
                     </button>
                     <button id="quickPlayBtn" class="btn-action success">
-                        <i class="fas fa-play-circle"></i>
+                        <i class="fas fa-bolt"></i>
                         <span>Quick Play</span>
-                    </button>
-                    <button id="bingoBtn" class="btn-action warning" disabled>
-                        <i class="fas fa-trophy"></i>
-                        <span>BINGO!</span>
                     </button>
                     <button id="depositBtn" class="btn-action info">
                         <i class="fas fa-money-bill-wave"></i>
                         <span>Deposit</span>
                     </button>
-                    <button id="withdrawBtn" class="btn-action danger">
+                    <button id="withdrawBtn" class="btn-action warning">
                         <i class="fas fa-wallet"></i>
                         <span>Withdraw</span>
+                    </button>
+                    <button id="historyBtn" class="btn-action secondary">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
                     </button>
                     <button id="helpBtn" class="btn-action secondary">
                         <i class="fas fa-question-circle"></i>
                         <span>Help</span>
                     </button>
+                </div>
+            </section>
+
+            <!-- Game Stats -->
+            <section class="game-stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="gamesPlayed">0</div>
+                            <div class="stat-label">Games Played</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="gamesWon">0</div>
+                            <div class="stat-label">Games Won</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalWinnings">0 ETB</div>
+                            <div class="stat-label">Total Winnings</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="winRate">0%</div>
+                            <div class="stat-label">Win Rate</div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -214,25 +294,31 @@
                 </div>
                 
                 <nav class="sidebar-nav">
-                    <a href="#" class="nav-item active" data-section="game">
+                    <a href="#" class="nav-item active" data-section="dashboard">
                         <i class="fas fa-gamepad"></i>
-                        <span>Game</span>
-                    </a>
-                    <a href="#" class="nav-item" data-section="history">
-                        <i class="fas fa-history"></i>
-                        <span>Game History</span>
+                        <span>Game Dashboard</span>
                     </a>
                     <a href="#" class="nav-item" data-section="wallet">
                         <i class="fas fa-wallet"></i>
                         <span>Wallet</span>
+                        <span class="nav-badge" id="walletBadge">0 ETB</span>
                     </a>
                     <a href="#" class="nav-item" data-section="transactions">
                         <i class="fas fa-exchange-alt"></i>
                         <span>Transactions</span>
                     </a>
+                    <a href="#" class="nav-item" data-section="history">
+                        <i class="fas fa-history"></i>
+                        <span>Game History</span>
+                    </a>
                     <a href="#" class="nav-item" data-section="referral">
                         <i class="fas fa-user-friends"></i>
-                        <span>Referral</span>
+                        <span>Referral Program</span>
+                        <span class="nav-badge" id="referralCount">0</span>
+                    </a>
+                    <a href="#" class="nav-item" data-section="leaderboard">
+                        <i class="fas fa-crown"></i>
+                        <span>Leaderboard</span>
                     </a>
                     <a href="#" class="nav-item" data-section="settings">
                         <i class="fas fa-cog"></i>
@@ -245,6 +331,10 @@
                 </nav>
                 
                 <div class="sidebar-footer">
+                    <div class="connection-status">
+                        <i class="fas fa-wifi" id="connectionIcon"></i>
+                        <span id="connectionStatus">Connected</span>
+                    </div>
                     <button id="logoutBtn" class="btn-logout">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
@@ -253,28 +343,106 @@
             </div>
         </aside>
 
-        <!-- Modals -->
+        <!-- Modals & Overlays -->
+
+        <!-- Number Call Animation -->
+        <div id="numberCallAnimation" class="number-call-animation-container">
+            <!-- Animation content added by JavaScript -->
+        </div>
+
+        <!-- Winner Announcement Modal -->
+        <div id="winnerAnnouncement" class="winner-announcement-container">
+            <!-- Content added by JavaScript -->
+        </div>
+
+        <!-- Card Selection Panel -->
+        <div id="cardSelectionPanel" class="card-selection-panel">
+            <div class="panel-header">
+                <h4><i class="fas fa-clock"></i> SELECT YOUR CARD</h4>
+                <div class="time-remaining">
+                    <span id="selectionTimer">30</span>s remaining
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="selectionProgress"></div>
+                </div>
+            </div>
+            
+            <div class="panel-body">
+                <p class="selection-message" id="timeLeftMessage">
+                    30 seconds to select your card for next game
+                </p>
+                <p class="game-info">
+                    Next Game ID: <span id="nextGameId">-</span>
+                    <br>
+                    Ends at: <span id="selectionEndsAt">-</span>
+                </p>
+                
+                <div class="selection-actions">
+                    <button id="quickSelectBtn" class="btn-quick-select">
+                        <i class="fas fa-bolt"></i> Quick Select
+                    </button>
+                    <button id="manualSelectBtn" class="btn-manual-select">
+                        <i class="fas fa-search"></i> Choose Card
+                    </button>
+                </div>
+                
+                <div class="selection-tips">
+                    <p><i class="fas fa-lightbulb"></i> Tip: Select a card with numbers you like!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Selection Modal -->
         <div id="cardSelectionModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content large">
                 <div class="modal-header">
-                    <h3>Select Your Bingo Card</h3>
+                    <h3><i class="fas fa-id-card"></i> Select Your Bingo Card</h3>
                     <button class="modal-close">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="cards-filter">
-                        <input type="text" id="cardSearch" placeholder="Search card number..." class="search-input">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="cardSearch" placeholder="Search card number (1-400)" class="search-input">
+                        </div>
                         <div class="filter-buttons">
-                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn active" data-filter="all">All Cards</button>
                             <button class="filter-btn" data-filter="available">Available</button>
-                            <button class="filter-btn" data-filter="taken">Taken</button>
+                            <button class="filter-btn" data-filter="lucky">Lucky Numbers</button>
                         </div>
                     </div>
-                    <div class="cards-grid" id="cardsGridContainer">
-                        <!-- Cards generated dynamically -->
+                    
+                    <div class="cards-info">
+                        <div class="info-item">
+                            <span class="info-label">Total Cards:</span>
+                            <span class="info-value">400</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Available:</span>
+                            <span class="info-value" id="availableCardsCount">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Selected:</span>
+                            <span class="info-value" id="selectedCardDisplay">None</span>
+                        </div>
                     </div>
+                    
+                    <div class="cards-grid-container">
+                        <div class="cards-grid" id="cardsGrid">
+                            <!-- Cards 1-400 will be generated here -->
+                        </div>
+                    </div>
+                    
                     <div class="modal-actions">
-                        <button id="confirmCardBtn" class="btn-primary" disabled>Confirm Selection</button>
-                        <button class="btn-secondary modal-close">Cancel</button>
+                        <button id="confirmCardBtn" class="btn-primary" disabled>
+                            <i class="fas fa-check"></i> Confirm Selection
+                        </button>
+                        <button class="btn-secondary modal-close">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -283,22 +451,22 @@
         <!-- Bingo Celebration Modal -->
         <div id="bingoCelebration" class="celebration-modal">
             <div class="celebration-content">
-                <div class="confetti-container"></div>
+                <div class="confetti"></div>
                 <div class="celebration-title">BINGO!</div>
-                <div class="celebration-message">🎉 Congratulations! You Won! 🎉</div>
+                <div class="celebration-subtitle">🎉 Congratulations! You Won! 🎉</div>
                 <div class="prize-amount" id="celebrationPrize">0 ETB</div>
                 <div class="celebration-details">
                     <div class="detail-item">
                         <span>Card Number:</span>
-                        <strong id="celebrationCard">0</strong>
+                        <strong id="celebrationCardNumber">-</strong>
                     </div>
                     <div class="detail-item">
                         <span>Winning Pattern:</span>
-                        <strong id="celebrationPattern">Line</strong>
+                        <strong id="celebrationPattern">-</strong>
                     </div>
                     <div class="detail-item">
-                        <span>Total Winners:</span>
-                        <strong id="celebrationWinners">1</strong>
+                        <span>Winning Numbers:</span>
+                        <div class="winning-numbers-list" id="celebrationNumbers"></div>
                     </div>
                 </div>
                 <button id="claimPrizeBtn" class="btn-celebrate">
@@ -311,71 +479,37 @@
         <div id="depositModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Deposit Funds</h3>
+                    <h3><i class="fas fa-money-bill-wave"></i> Deposit Funds</h3>
                     <button class="modal-close">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="deposit-options">
-                        <div class="option-group">
-                            <h4>Select Amount</h4>
-                            <div class="amount-grid">
-                                <button class="amount-btn" data-amount="10">10 ETB</button>
-                                <button class="amount-btn" data-amount="50">50 ETB</button>
-                                <button class="amount-btn" data-amount="100">100 ETB</button>
-                                <button class="amount-btn" data-amount="500">500 ETB</button>
-                                <button class="amount-btn" data-amount="1000">1000 ETB</button>
-                                <button class="amount-btn" data-amount="5000">5000 ETB</button>
-                            </div>
-                        </div>
-                        <div class="option-group">
-                            <h4>Custom Amount</h4>
-                            <div class="custom-amount">
-                                <input type="number" id="customAmount" min="10" max="50000" placeholder="Enter amount" class="amount-input">
-                                <span class="currency">ETB</span>
-                            </div>
-                        </div>
-                        <div class="deposit-instructions">
-                            <h4><i class="fas fa-info-circle"></i> How to Deposit</h4>
-                            <ol>
-                                <li>Send money via Telebirr to: <strong>09XXXXXXXX</strong></li>
-                                <li>Take screenshot of payment confirmation</li>
-                                <li>Send the screenshot here for verification</li>
-                                <li>Funds will be added instantly upon verification</li>
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button id="confirmDepositBtn" class="btn-primary">Proceed to Payment</button>
-                        <button class="btn-secondary modal-close">Cancel</button>
-                    </div>
+                    <!-- Deposit content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdraw Modal -->
+        <div id="withdrawModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-wallet"></i> Withdraw Funds</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Withdraw content -->
                 </div>
             </div>
         </div>
 
         <!-- Game History Modal -->
         <div id="historyModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content large">
                 <div class="modal-header">
-                    <h3>Game History</h3>
+                    <h3><i class="fas fa-history"></i> Game History</h3>
                     <button class="modal-close">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="history-table-container">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Game ID</th>
-                                    <th>Date</th>
-                                    <th>Result</th>
-                                    <th>Prize</th>
-                                    <th>Players</th>
-                                </tr>
-                            </thead>
-                            <tbody id="historyTableBody">
-                                <!-- History generated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- History content -->
                 </div>
             </div>
         </div>
@@ -383,7 +517,7 @@
         <!-- Toast Notifications -->
         <div id="toastContainer" class="toast-container"></div>
 
-        <!-- Audio Elements -->
+        <!-- Audio Elements (Hidden) -->
         <audio id="numberCallSound" preload="auto">
             <source src="assets/sounds/number-call.mp3" type="audio/mpeg">
         </audio>
@@ -393,14 +527,22 @@
         <audio id="winSound" preload="auto">
             <source src="assets/sounds/win.mp3" type="audio/mpeg">
         </audio>
+        <audio id="gameStartSound" preload="auto">
+            <source src="assets/sounds/game-start.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="countdownSound" preload="auto">
+            <source src="assets/sounds/countdown.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/telegram.js"></script>
     <script src="js/socket.js"></script>
     <script src="js/game.js"></script>
     <script src="js/wallet.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
     
     <!-- Service Worker Registration -->
